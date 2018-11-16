@@ -1,0 +1,65 @@
+<div (click)="showFull()" ngClass='main__card-wrapper'>
+  <div class="title__block">
+    <span>{{item.title}}</span>
+    <span class="btn__block">
+      <button class="button__update" (click)="openDialog()"><img src="/assets/icons/baseline-create-24px.svg"
+                                                                 alt=""></button>
+      <button class="button__remove" (click)="openConfirm()"><img src="/assets/icons/baseline-clear-24px.svg"
+                                                                 alt=""></button>
+    </span>
+  </div>
+  <div *ngIf="full">
+    <span>
+        {{item.description}}
+    </span>
+  </div>
+  <div>{{item.priority}}</div>
+  <div>
+    {{item.deadLine | date }}
+  </div>
+</div>
+
+<div *ngIf="dialog" (click)="closeDialog($event, dialog)" #dialog
+     [ngClass]="dialogClasses()">
+  <div class="dialog__block">
+    <form [formGroup]="todoForm" class="card">
+      <div class="add__wrap">
+        <label for="title">Title</label>
+        <input formControlName="title" class="input" id="title" type="text">
+        <span class="invalid" *ngIf="checkOnValid('title')">Max length 55, min length 2</span>
+      </div>
+      <div class="add__wrap">
+        <label for="description">Description</label>
+        <textarea formControlName="description" (input)="autoresize()" class="input" id="description"
+                  #textarea></textarea>
+        <span class="invalid" *ngIf="checkOnValid('description')">Max length 255, min length 2</span>
+      </div>
+      <div class="add__wrap">
+        <label for="date">Date</label>
+        <input formControlName="deadLine" class="input" id="date" type="date">
+        <span class="invalid" *ngIf="checkOnValid('deadLine')"></span>
+      </div>
+      <div class="add__wrap">
+        <label for="status">Status</label>
+        <select formControlName="status" id='status' class="select input">
+          <option *ngFor="let status of statuses" [value]="status.value">{{ status.text }}</option>
+        </select>
+      </div>
+      <div class="add__wrap">
+        <label for="priority">Priority</label>
+        <input formControlName="priority" class="input" id="priority" type="text">
+        <span class="invalid" *ngIf="checkOnValid('priority')">only numbers from 1 to 3</span>
+      </div>
+      <div class="button__wrap">
+        <button [disabled]="todoForm.invalid" class='button__sbm' (click)="updateItem()">submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="confirm" (click)="closeConfirm($event, dialog)" #dialog
+     [ngClass]="dialogClasses()">
+  <div class="dialog__block confirm">
+    <div class="button" (click)="removeItem()">Confirm</div>
+    <div class="button" (click)="confirm = !confirm">Cancel</div>
+  </div>
+</div>
